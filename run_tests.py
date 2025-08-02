@@ -29,10 +29,10 @@ def run_tests():
     
     try:
         result = subprocess.run(args, check=True)
-        print("✅ All tests passed!")
+        print(" All tests passed!")
         return 0
     except subprocess.CalledProcessError as e:
-        print(f"❌ Tests failed with exit code {e.returncode}")
+        print(f" Tests failed with exit code {e.returncode}")
         return e.returncode
 
 if __name__ == "__main__":

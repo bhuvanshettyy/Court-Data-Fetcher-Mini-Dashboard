@@ -156,9 +156,9 @@ def demo_web_interface():
         
         for template in template_files:
             if os.path.exists(template):
-                print(f"  ✅ {template}")
+                print(f"   {template}")
             else:
-                print(f"  ❌ {template}")
+                print(f"   {template}")
         
         # Check if static files exist
         static_files = [
@@ -169,9 +169,9 @@ def demo_web_interface():
         print("\nStatic files:")
         for static_file in static_files:
             if os.path.exists(static_file):
-                print(f"  ✅ {static_file}")
+                print(f"   {static_file}")
             else:
-                print(f"  ❌ {static_file}")
+                print(f"   {static_file}")
         
         print("\nWeb interface demo completed!")
         return True
@@ -201,16 +201,16 @@ def main():
             success = demo_func()
             results.append((name, success))
         except Exception as e:
-            print(f"❌ {name} demo crashed: {str(e)}")
+            print(f" {name} demo crashed: {str(e)}")
             results.append((name, False))
     
     # Summary
-    print("\n📊 Demo Summary")
+    print("\n Demo Summary")
     print("=" * 50)
     
     passed = 0
     for name, success in results:
-        status = "✅ PASSED" if success else "❌ FAILED"
+        status = " PASSED" if success else " FAILED"
         print(f"{name}: {status}")
         if success:
             passed += 1
