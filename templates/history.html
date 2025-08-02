@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}Search History - Court Data Fetcher{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="text-primary">
+                    <i class="fas fa-history me-2"></i>
+                    Search History
+                </h2>
+                <p class="text-muted">
+                    Recent case searches and their results
+                </p>
+            </div>
+            <a href="{{ url_for('index') }}" class="btn btn-primary">
+                <i class="fas fa-search me-2"></i>New Search
+            </a>
+        </div>
+
+        <!-- Search History Table -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    Recent Searches
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if searches %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Case Details</th>
+                                    <th>Search Time</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for search in searches %}
+                                    <tr>
+                                        <td>
+                                            <div>
+                                                <strong>{{ search.case_type }}</strong>
+                                                <br>
+                                                <small class="text-muted">
+                                                    Case No: {{ search.case_number }} / {{ search.filing_year }}
+                                                </small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <i class="fas fa-clock me-1 text-muted"></i>
+                                                {{ search.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                                                <br>
+                                                <small class="text-muted">
+                                                    {{ search.timestamp.strftime('%A, %B %d') }}
+                                                </small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if search.case_data and search.case_data.status == 'success' %}
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check me-1"></i>Found
+                                                </span>
+                                            {% elif search.case_data and search.case_data.status == 'not_found' %}
+                                                <span class="badge bg-warning">
+                                                    <i class="fas fa-times me-1"></i>Not Found
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">
+                                                    <i class="fas fa-question me-1"></i>Unknown
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if search.case_data and search.case_data.status == 'success' %}
+                                                <button class="btn btn-sm btn-outline-primary" 
+                                                        onclick="viewCaseDetails({{ search.case_data.id }})">
+                                                    <i class="fas fa-eye me-1"></i>View
+                                                </button>
+                                            {% else %}
+                                                <button class="btn btn-sm btn-outline-secondary" 
+                                                        onclick="retrySearch('{{ search.case_type }}', '{{ search.case_number }}', '{{ search.filing_year }}')">
+                                                    <i class="fas fa-redo me-1"></i>Retry
+                                                </button>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No Search History</h5>
+                        <p class="text-muted">Start searching for cases to see your history here.</p>
+                        <a href="{{ url_for('index') }}" class="btn btn-primary">
+                            <i class="fas fa-search me-2"></i>Start Searching
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        {% if searches %}
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <div class="card text-center border-0 shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-search fa-2x text-primary mb-2"></i>
+                            <h4>{{ searches|length }}</h4>
+                            <p class="text-muted small">Total Searches</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center border-0 shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                            <h4>{{ searches|selectattr('case_data')|selectattr('case_data.status', 'equalto', 'success')|list|length }}</h4>
+                            <p class="text-muted small">Successful</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center border-0 shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-times-circle fa-2x text-warning mb-2"></i>
+                            <h4>{{ searches|selectattr('case_data')|selectattr('case_data.status', 'equalto', 'not_found')|list|length }}</h4>
+                            <p class="text-muted small">Not Found</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center border-0 shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-calendar fa-2x text-info mb-2"></i>
+                            <h4>{{ searches[0].timestamp.strftime('%Y-%m-%d') if searches else 'N/A' }}</h4>
+                            <p class="text-muted small">Latest Search</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Case Details Modal -->
+        <div class="modal fade" id="caseDetailsModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-file-alt me-2"></i>
+                            Case Details
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="caseDetailsContent">
+                        <!-- Content will be loaded here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function viewCaseDetails(caseDataId) {
+    // This would typically make an AJAX call to get case details
+    // For now, we'll show a placeholder
+    const modal = new bootstrap.Modal(document.getElementById('caseDetailsModal'));
+    document.getElementById('caseDetailsContent').innerHTML = `
+        <div class="text-center py-4">
+            <i class="fas fa-spinner fa-spin fa-2x text-primary mb-3"></i>
+            <p>Loading case details...</p>
+        </div>
+    `;
+    modal.show();
+    
+    // Simulate loading case details
+    setTimeout(() => {
+        document.getElementById('caseDetailsContent').innerHTML = `
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                Case details would be loaded here via AJAX call.
+            </div>
+        `;
+    }, 1000);
+}
+
+function retrySearch(caseType, caseNumber, filingYear) {
+    // Redirect to search page with pre-filled values
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{{ url_for("search_case") }}';
+    
+    const caseTypeInput = document.createElement('input');
+    caseTypeInput.type = 'hidden';
+    caseTypeInput.name = 'case_type';
+    caseTypeInput.value = caseType;
+    
+    const caseNumberInput = document.createElement('input');
+    caseNumberInput.type = 'hidden';
+    caseNumberInput.name = 'case_number';
+    caseNumberInput.value = caseNumber;
+    
+    const filingYearInput = document.createElement('input');
+    filingYearInput.type = 'hidden';
+    filingYearInput.name = 'filing_year';
+    filingYearInput.value = filingYear;
+    
+    form.appendChild(caseTypeInput);
+    form.appendChild(caseNumberInput);
+    form.appendChild(filingYearInput);
+    
+    document.body.appendChild(form);
+    form.submit();
+}
+
+// Auto-refresh history every 30 seconds
+setInterval(() => {
+    // This would typically make an AJAX call to refresh the history
+    console.log('History auto-refresh would happen here');
+}, 30000);
+</script>
+{% endblock %} 
