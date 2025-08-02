@@ -30,7 +30,7 @@ def init_database():
             os.makedirs(downloads_dir, exist_ok=True)
             print(f" Downloads directory created: {downloads_dir}")
             
-            print("\n🎉 Database initialization completed successfully!")
+            print("\nDatabase initialization completed successfully!")
             print("You can now run the application with: python app.py")
             
     except Exception as e:

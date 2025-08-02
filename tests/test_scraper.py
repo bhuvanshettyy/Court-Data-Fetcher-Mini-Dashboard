@@ -4,7 +4,7 @@ import os
 from unittest.mock import Mock, patch, MagicMock
 
 # Add the parent directory to the path so we can import our modules
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from utils.court_scraper import DelhiHighCourtScraper
 from utils.captcha_solver import CaptchaSolver

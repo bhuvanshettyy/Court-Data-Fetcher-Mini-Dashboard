@@ -14,7 +14,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 def demo_scraper():
     """Demo the scraper functionality"""
-    print("🔍 Demo: Court Scraper")
+    print("Demo: Court Scraper")
     print("=" * 40)
     
     try:
@@ -28,16 +28,16 @@ def demo_scraper():
             print(f"  {i}. {case_type}")
         print("  ...")
         
-        print("\n✅ Scraper demo completed!")
+        print("\nScraper demo completed!")
         return True
         
     except Exception as e:
-        print(f"❌ Scraper demo failed: {str(e)}")
+        print(f"Scraper demo failed: {str(e)}")
         return False
 
 def demo_captcha_solver():
     """Demo the CAPTCHA solver"""
-    print("\n🔐 Demo: CAPTCHA Solver")
+    print("\nDemo: CAPTCHA Solver")
     print("=" * 40)
     
     try:
@@ -50,19 +50,19 @@ def demo_captcha_solver():
         
         for captcha in test_captchas:
             is_valid = solver.validate_captcha(captcha)
-            status = "✅ Valid" if is_valid else "❌ Invalid"
+            status = "Valid" if is_valid else "Invalid"
             print(f"  '{captcha}': {status}")
         
-        print("\n✅ CAPTCHA solver demo completed!")
+        print("\nCAPTCHA solver demo completed!")
         return True
         
     except Exception as e:
-        print(f"❌ CAPTCHA solver demo failed: {str(e)}")
+        print(f"CAPTCHA solver demo failed: {str(e)}")
         return False
 
 def demo_pdf_handler():
     """Demo the PDF handler"""
-    print("\n📄 Demo: PDF Handler")
+    print("\nDemo: PDF Handler")
     print("=" * 40)
     
     try:
@@ -83,16 +83,16 @@ def demo_pdf_handler():
             print(f"  Generated filename: {filename}")
             print()
         
-        print("✅ PDF handler demo completed!")
+        print("PDF handler demo completed!")
         return True
         
     except Exception as e:
-        print(f"❌ PDF handler demo failed: {str(e)}")
+        print(f"PDF handler demo failed: {str(e)}")
         return False
 
 def demo_database():
     """Demo the database functionality"""
-    print("\n🗄️  Demo: Database Models")
+    print("\nDemo: Database Models")
     print("=" * 40)
     
     try:
@@ -133,16 +133,16 @@ def demo_database():
         print(f"  Parties: {len(json.loads(sample_case.parties))} parties")
         print(f"  Orders: {len(json.loads(sample_case.orders))} orders")
         
-        print("\n✅ Database demo completed!")
+        print("\nDatabase demo completed!")
         return True
         
     except Exception as e:
-        print(f"❌ Database demo failed: {str(e)}")
+        print(f"Database demo failed: {str(e)}")
         return False
 
 def demo_web_interface():
     """Demo the web interface components"""
-    print("\n🌐 Demo: Web Interface")
+    print("\nDemo: Web Interface")
     print("=" * 40)
     
     try:
@@ -173,16 +173,16 @@ def demo_web_interface():
             else:
                 print(f"  ❌ {static_file}")
         
-        print("\n✅ Web interface demo completed!")
+        print("\nWeb interface demo completed!")
         return True
         
     except Exception as e:
-        print(f"❌ Web interface demo failed: {str(e)}")
+        print(f"Web interface demo failed: {str(e)}")
         return False
 
 def main():
     """Main demo function"""
-    print("🚀 Court Data Fetcher - Demo")
+    print("Court Data Fetcher - Demo")
     print("=" * 50)
     print("This demo showcases the core functionality of the application.\n")
     
@@ -218,13 +218,13 @@ def main():
     print(f"\nOverall: {passed}/{len(results)} demos passed")
     
     if passed == len(results):
-        print("\n🎉 All demos passed! The application is ready to use.")
+        print("\nAll demos passed! The application is ready to use.")
         print("\nTo run the application:")
         print("  1. python init_db.py")
         print("  2. python app.py")
         print("  3. Open http://localhost:5000 in your browser")
     else:
-        print("\n⚠️  Some demos failed. Please check the errors above.")
+        print("\nSome demos failed. Please check the errors above.")
     
     return passed == len(results)
 
